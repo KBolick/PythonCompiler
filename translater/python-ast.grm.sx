@@ -1,0 +1,372 @@
+;Authors: The Bolick Brothers
+;	  Kevin and Bruce
+
+; This is a grammar file for pyparse.rkt to use for parsing purposes.
+;      We apologize to anyone trying to read this code. Some functionality
+;      is actually hidden in some of the pictures that we made. It was a
+;      very silly project we did for a class at the University of Utah.
+;      We hope that you enjoy our artwork.
+
+; The context-free grammar version of each individual reduction rule is
+; commented above the code that performs that reduction. Every line is
+; fairly straightforward to understand if you know how to use Matt Might's
+; derivative parsing tool (derp) available at Might.Might.net.
+
+; <program> ::= (program <stmt>*)
+(file_input      (>--> (seq! `(rep (or NEWLINE stmt)) ENDMARKER)
+                       [`(,v⋈v) `(program ,@v⋈v)]))
+
+
+; <funcdef> ::= (def (<NAME> <NAME>*) <suite>)
+(funcdef         (>--> (seq! "def" `NAME `parameters ":" `suite)
+                       [`(,♥,u,♥_) `(def (,♥,@u),♥_)]))
+
+(parameters      (>--> (car (seq! "(" `(opt paramlist '(())) ")")) [`(,^u^) ^u^ ]))
+
+(paramlist       (seq! `(>--> (seq* NAME (@--> (rep (seq! "," `NAME)) append))
+                              
+                              #;[    n   n      v   v    ]
+                                [ `(,i≐,≐) `(,i≐,@≐)]  ) #;miaaao~~~~~k
+                              #;[ ""U U  U"  " T T  T""  ]
+                              #;[""""""""""""""""""""""""]
+                              
+                              (opt ",")))
+;  ^  ^
+; (≐o≐); <(^.^<) ^(^.^)^ (>^.^)>
+;  V  V|~~~'
+
+; <stmt> ::= <simple_stmt> | <compound_stmt>
+(stmt            (or simple_stmt compound_stmt))
+
+; <simple_stmt> ::= <small_stmt> | (begin <small_stmt>+)
+(simple_stmt     (car (seq! 
+                       `(@--> (seq* small_stmt (rep (car (seq! ";" `small_stmt))))
+                              
+                              #;[         ∩ ∩__              ]
+                              (λ         (⌢.⌢ u)#;~~~
+                              #;(  """♣""""♣""""♣""""♣"""  )
+                                
+                                #;                 (warning: dangerous)
+                                (if (null? u)    #;(when awake)
+       
+                                    
+                                    ⌢.⌢  #;(  ∩ ∩     (I'm sleeping too.))
+                                    `(begin   ,⌢.⌢,@u   )))) 
+                                    #;("""♣grass""♣grass""")
+
+                                    
+                                    (opt ";") NEWLINE)))
+
+; <small_stmt> ::= <expr_stmt>
+;               |  <del_stmt>
+;               |  <pass_stmt>
+;               |  <flow_stmt> 
+;               |  <global_stmt>
+;               |  <nonlocal_stmt>
+;               |  <assert_stmt>
+;               |  <import_stmt>
+(small_stmt      (or expr_stmt del_stmt pass_stmt flow_stmt global_stmt nonlocal_stmt assert_stmt #;import_stmt))
+
+; <expr_stmt> ::= (<augassign> (<test>+) <tuple_or_test>)
+;              |  (=           (<test>+) <tuple_or_test>)
+;              |  (expr <tuple_or_test>)
+(expr_stmt       (or 
+                  
+                  (>--> (seq* testlist augassign tuple_or_test) 
+                        #;=========================================     
+                        [#;            (   **      )
+                                      `(,_★,★_  ,d) 
+                                      `(,★_,_★  ,d)
+                        #;             (★__,__★ ,d)
+                        #;=========================================     
+                         ])
+                  
+                  (>--> (seq! `testlist "=" `tuple_or_test) 
+                        
+                        #;[     _^^^_        _<^^>_     ]
+                          [   `(,o,O=)     `(=,o,O=)    ]
+                        #;[     \⊤T/     ~(∪∪  ∪∪)    ]
+                         ;[     MRRRR        TUPLE      ]
+                        )
+                  
+                  (>--> tuple_or_test [☺ `(expr ,☺)])))
+
+; <augassign> ::= "+=" | "-=" | "*=" | "/="  | "%="
+;              |  "&=" | "|=" | "^=" | "<<=" | ">>=" | "**=" | "//="
+(augassign       (or "+=" "-=" "*=" "/=" "%=" "&=" "|=" "^=" "<<=" ">>=" "**=" "//="))
+
+; <del_stmt> ::= (del <star_expr>)
+(del_stmt        (>--> (seq* "del" star_expr) [☻ ☻]))
+
+; <pass_stmt> ::= (pass)
+(pass_stmt       (>--> "pass" [⌣ '(pass)]))
+
+; <flow_stmt> ::= <break_stmt> | <continue_stmt> | <return_stmt> | <raise_stmt>
+(flow_stmt       (or break_stmt continue_stmt return_stmt raise_stmt))
+
+; <break_stmt> ::= (break)
+(break_stmt      (>--> "break" [BEER '(break)]))
+
+; <continue_stmt> ::= (continue)
+(continue_stmt   (>--> "continue" [♣ '(continue)]))
+
+; <return_stmt> ::= (return <test>*)
+(return_stmt     (>--> (seq! "return" `(opt testlist '())) ['() '(return)][`(,⋈) `(return ,@⋈)]))
+
+; <raise_stmt> ::= (raise [ <test> [ <test> ] ])
+(raise_stmt      (>--> (seq! "raise" `(opt ($--> (seq* test (opt (seq! "from" `test) '()))
+                                                 `(,($ 0) ,@($ 1))) '()))
+                       [`(,⋈) `(raise ,@⋈)]))
+
+; <global_stmt> ::= (global <NAME>+) 
+(global_stmt     (>--> (seq! "global" `NAME `(@--> (rep (seq! "," `NAME)) append))
+                       [`(,★,v) `(global ,★ ,@v)]))
+
+; <nonlocal_stmt> ::= (nonlocal <NAME>+)
+(nonlocal_stmt   (>--> (seq! "nonlocal" `NAME `(@--> (rep (seq! "," `NAME)) append))
+                       [`(,⌢.⌢ ,⋈) `(nonlocal ,⌢.⌢ ,@⋈)]))
+
+; <assert_stmt> ::= (assert <test> [ <test> ])
+(assert_stmt     (>--> (seq! "assert" `test `(opt (seq! "," `test) '()))
+                       [`(,∞,★) `(assert ,∞,@★)]));`(assert ,($ 0) ,@($ 1))))
+
+; <compound_stmt> ::= <if_stmt> | <while_stmt> | <for_stmt> | <try_stmt> | <funcdef>
+(compound_stmt   (or if_stmt while_stmt for_stmt try_stmt funcdef))
+
+; <if_stmt> ::= (cond (<test> <suite>)+ [ (else <suite>) ])
+(if_stmt         (>--> (seq! "if" `test ":" `suite `(rep (seq! "elif" `test ":" `suite)) `(opt (seq! "else" ":" `suite) '()))
+                       [`(,♥,♠,♦,♣) (begin
+                                      (if (null? ♣)
+                                          `(cond (,♥ ,♠) ,@♦)
+                                          `(cond (,♥ ,♠) ,@♦ (else ,@♣))))]))                      
+
+; <while_stmt> ::= (while <test> <suite> [ <suite> ])
+(while_stmt      (>--> (seq! "while" `test ":" `suite `(opt (seq! "else" ":" `suite) '()))
+                       [`(,a,b,c) `(while ,a,b,@c)]))
+
+
+; <for_stmt> ::= (for <NAME> <test> <suite> [ <suite> ]) 
+(for_stmt        (>--> (seq! "for" `NAME "in" `test ":" `suite `(opt (seq! "else" ":" `suite) '()))
+                       [`(,♥,♠,♦,♣) `(for ,♥,♠,♦,@♣)]));`(for ,($ 1) ,($ 3) ,($ 5) ,@($ 6))))
+
+; <try_stmt>      ::= (try <suite> ((<catch> <suite>)*) <maybe-else> <maybe-finally>)
+; <maybe-else>    ::= <suite> | #f
+; <maybe-finally> ::= <suite> | #f
+(try_stmt        (>--> (seq! "try" ":"      
+                             `suite 
+                             `(or (>--> (seq* (rep+ (seq! `except_clause ":" `suite)) 
+                                              (opt (car (seq! "else" ":" `suite)) #f) 
+                                              (opt (car (seq! "finally" ":" `suite)) #f))
+
+                                        
+                    #;                           [ ∩ ∩ ]
+                    #;                          [ _0..0_ ]       
+                                              (  .ζ.  .ζ.  )
+                    #;                     ( ====   ~~   ==== )
+                    #;                   (//      \/\/\/     \\))
+                    (>-->              (seq! "finally" ":" `suite)
+                                        (`(,o.O) `(() ,#f ,o.O ))                  )))
+                    #;                ((     ^^)     (         ^^))
+                                     [`(,⋈ ,>.<)  `(try ,⋈ ,@>.<)]               ));
+
+
+; <catch> ::= (except [ <test> [ <NAME> ] ])
+;(except_clause   ($--> (seq! "except" `(opt 
+;                                        ($--> (seq* test (opt (seq! "as" `NAME) '()))
+;                                              `(,($ 0) ,@($ 1))) '()))
+;                       `(except ,@($ 0))))
+(except_clause   (>--> (seq! "except" `(opt 
+                                        (>--> (seq* test (opt (seq! "as" `NAME) '()))
+                       
+                                              [`(,~⋈,⋈~) `(,~⋈,@⋈~)]) '()))
+                       
+                       [`(,⋈) `(except ,@⋈)]))
+
+; <suite> ::= <simple_stmt> | (suite <stmt>+)
+(suite           (or simple_stmt 
+                     ($--> (seq! NEWLINE INDENT `(rep+ stmt) DEDENT)
+                           `(suite ,@($ 0)))))
+
+; <test> ::= (if <or_test> <or_test> <test>)
+;         |  <or_test>
+;         |  <lambdef>
+(test            (or 
+                  
+                  ;           ******★KIRBY★******
+                  (>--> #;    (>")>  <(^.^)>  <("<)    #; <--<;)
+                  ;           ******★DANCE★******
+                        
+                        (seq! `or_test "if" `or_test "else" `test) 
+                        [`(,_x,x_,u) `(if ,x_,_x,u)]) 
+                  
+                  or_test 
+                  lambdef))
+
+(lambdef         (>--> (seq! "lambda" `(opt paramlist '()) ":" `test)
+                       [`(,☺ ,☻) (if (null? ☺)
+                               `(lambda () ,☻)
+                               `(lambda ,@☺ ,☻))]))
+
+
+; <or_test> ::= <and_test> | (or <and_test>+)
+(or_test         ($--> (seq* and_test (rep (car (seq! "or" `and_test))))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(or ,($ 0) ,@($ 1)))))
+
+; <and_test> ::= <not_test> | (and <not_test>+)
+(and_test        ($--> (seq* not_test (rep (car (seq! "and" `not_test))))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(and ,($ 0) ,@($ 1)))))
+
+; <not_test> ::= <comparison> | (not <not_test>)
+(not_test        (or (>--> (seq* "not" not_test) 
+                           [★★★★★fivestars ★★★★★fivestars])
+                     comparison))
+
+; <comparison> ::= <star_expr> | (comparison <star_expr> (<comp_op> <star_expr>)+)
+(comparison      ($--> (seq* star_expr (rep (seq* comp_op star_expr)))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(comparison ,($ 0) ,@($ 1)))))
+
+; <comp_op> ::= "<" | ">" | "==" | ">=" | "<=" | "<>" | "!= " | "in"
+;            |  "not-in" | "is" | "is-not"
+(comp_op         (or "<" ">" "==" ">=" "<=" "<>" "!="
+                     ($--> "in" "in")
+                     ($--> (seq "not" "in") "not-in")
+                     ($--> "is" "is")
+                     ($--> (seq "is" "not") "is-not")))
+
+; <star_expr> ::= <expr> | (star <expr>)
+(star_expr       ($--> (seq* (opt "*" #f) expr)
+                       (if ($ 0)
+                           `(star ,($ 1))
+                           ($ 1))))
+
+; <expr> ::= <xor_expr> | (bitwise-or <xor_expr>+)
+(expr            ($--> (seq* xor_expr (rep (car (seq! "|" `xor_expr))))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(bitwise-or ,($ 0) ,@($ 1)))))
+
+; <xor_expr> ::= <and_expr> | (bitwise-xor <and_expr>+)
+(xor_expr        ($--> (seq* and_expr (rep (car (seq! "^" `and_expr))))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(bitwise-xor ,($ 0) ,@($ 1)))))
+
+; <and_expr> ::= <shift_expr> | (bitwise-and <shift_expr>+)
+(and_expr        ($--> (seq* shift_expr (rep (car (seq! "&" `shift_expr))))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(bitwise-and ,($ 0) ,@($ 1)))))
+
+; <shift_expr> ::= <arith_expr> | (shift <arith_expr> (<shift_op> <arith_expr>)+)
+; <shift_op> ::= "<<" | ">>"
+(shift_expr      ($--> (seq* arith_expr (rep (seq* (or "<<" ">>") arith_expr)))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(shift ,($ 0) ,@($ 1)))))
+
+; <arith_expr> ::= <term> | (arith <term> (<arith_op> <term>)+)
+; <arith_op> ::= "+" | "-"
+(arith_expr      ($--> (seq* term (rep (seq* (or "+" "-") term)))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(arith ,($ 0) ,@($ 1)))))
+
+; <term> ::= <factor> | (term <factor> (<factor_op> <factor>)+)
+; <factor_op> ::= "*" | "/" | "%" | "//"
+(term            ($--> (seq* factor (rep (seq* (or "*" "/" "%" "//") factor)))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(term ,($ 0) ,@($ 1)))))
+
+; <factor> ::= <power> | (<unary_op> <factor>)
+; <unary_op> ::= "+" | "-" | "~"
+(factor          (or 
+                  (>--> (seq* (or "+" "-" "~") factor) [☺ ☺])
+                  power))
+
+; <indexed> ::= <atom> | (indexed <atom> <trailer>+)
+(indexed         ($--> (seq* atom (rep trailer))
+                       (if (null? ($ 1))
+                           ($ 0)
+                           `(indexed ,@(append `(,($ 0)) ($ 1))))))
+
+; <power> ::= <indexed> | (power <indexed> <factor>)
+(power           (>--> (seq* indexed (opt (car (seq! "**" `factor)) #f))
+                       [`(,★ #f) ★]
+                       [`(,o,O) `(power ,o,O)]))
+
+; <atom> ::= <tuple_or_test> | (tuple)
+;         |  (list [ <testlist> ]) 
+;         |  <dict>
+;         |  <set>
+;         |  <NAME>
+;         |  <NUMBER>
+;         |  <STRING>
+;         |  Ellipsis
+;         |  None
+;         |  True
+;         |  False
+(atom            (or (>--> (seq! "(" `(opt tuple_or_test `(tuple)) ")") [`(,⋈) ⋈])
+                     (>--> (seq! "[" `(opt testlist '()) "]") [`(,⋈) `(list ,@⋈)])
+                     (>--> (seq! "{" `(opt dictorsetmaker `(dict)) "}")[`(,⋈) ⋈])
+                     NAME 
+                     NUMBER 
+                     (@--> (rep+ STRING) string-append)
+                     (>--> "..." [⋈ 'Ellipsis])
+                     (>--> "None" [⋈ 'None])
+                     (>--> "True" [⋈ 'True])
+                     (>--> "False" [⋈ 'False])))
+
+; <trailer> ::= (called [ <arglist> ])
+;            |  (subscript <tuple_or_test>)
+;            |  (dot <NAME>)
+(trailer        (or 
+                 (@--> (seq! "(" `(opt arglist '()) ")")
+                       (λ (arglist)
+                         `(called ,@arglist)))
+                 (>--> (seq! "[" `tuple_or_test "]") [`(,⋈) `(subscript ,⋈)])
+                 (>--> (seq! "." `NAME) [`(,⋈) `(dot ,⋈)])))
+
+; <testlist> ::= <test>+
+; This returns testlist inside of a list
+(testlist       (car (seq! `($--> (seq* test (rep (car (seq! "," `test))))
+                                  (cons ($ 0) ($ 1)))
+                           (opt ","))))
+
+; <tuple_or_test> ::= <test> | (tuple <test>+)
+(tuple_or_test  (@--> (seq! `test `(rep (car (seq! "," `test))) `(opt "," 'T⌢T))
+                      (λ (first rest grandma)
+                        (begin 
+                          (if (null? rest)
+                              (if (equal? grandma 'T⌢T)
+                                  first   
+                                  `(tuple ,first))
+                              `(tuple ,first ,@rest))))))
+
+; <dict> ::= (dict (<test> <test>)*) 
+; <set> ::= (set <test>*)
+(dictorsetmaker (or 
+                 (car (seq! `(@--> (seq* ($--> (seq! `test ":" `test) $$) (rep (seq! "," `test ":" `test)))
+                                   (λ (first rest)
+                                     (if (null? rest)
+                                         `(dict ,first)
+                                         `(dict ,@(append `(,first) rest)))))
+                            (opt ",")))
+                 (car (seq! `(@--> (seq* test (@--> (rep (seq! "," `test)) append))
+                                   (λ (first rest)
+                                     (if (null? rest)
+                                         `(set ,first)
+                                         `(set ,@(append `(,first) rest))))) 
+                            (opt ",")))))
+; <arglist> ::= <test>+ 
+(arglist        (>--> (seq! 
+                       `(seq (>--> test [`(,⋈) `(A ,⋈)][☺ ☺]) 
+                             (>--> (@--> (rep (seq! "," `test)) append)
+                                   [☺ ☺])) (opt ","))
+                      [`(,⋈) ⋈]))

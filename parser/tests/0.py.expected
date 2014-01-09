@@ -1,0 +1,1 @@
+(program (def (abs x) (suite (pass))))

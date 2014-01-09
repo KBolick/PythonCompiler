@@ -1,0 +1,5 @@
+(program
+ (= (x) (lambda (x) (power x 2)))
+ (= (y) (lambda (y z) (term y ("*" z))))
+ (= (z) (lambda () 2)))
+

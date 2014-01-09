@@ -1,0 +1,16 @@
+(program
+ (= (cache) (dict (0 0) (1 1)))
+ (def
+  (fib n)
+  (suite
+   (cond
+    ((comparison n ("in" cache))
+     (suite (return (indexed cache (subscript n))))))
+   (=
+    ((indexed cache (subscript n)))
+    (arith
+     (indexed fib (called (arith n ("-" 1))))
+     ("+" (indexed fib (called (arith n ("-" 2)))))))
+   (return (indexed cache (subscript n)))))
+ (expr (indexed print (called (indexed fib (called 25))))))
+

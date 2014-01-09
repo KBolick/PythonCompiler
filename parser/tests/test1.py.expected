@@ -1,0 +1,7 @@
+(program
+ (def
+  (a)
+  (suite
+   (cond ((comparison b ("<" c)) (suite (expr d))) (else (suite (expr e))))))
+ (def (f) (suite (begin (expr g) (expr h)) (expr i))))
+

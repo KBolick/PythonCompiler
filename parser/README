@@ -1,0 +1,22 @@
+Authors:
+	Kevin Bolick and Bruce Bolick
+
+This is a parser for Python code.
+This takes tokenized input and parses it into a parse tree in s-expression form.
+
+Dependencies:
+	racket
+	raco
+
+Working:
+	Parses a large subset of Python grammar
+
+Not working:
+	A few Python keywords like yield and class
+
+Manifest:  pyparse.rkt             ;Parser that uses python-ast.grm.sx file written by Prof. Matt Might
+	   derivative_parsers.rkt  ;Parsing tool written by Prof. Matt Might
+	   python-ast.grm.sx	   ;Python grammar file containing rules for parsing
+	   Makefile		   ;The Makefile
+	   sdiff.rkt		   ;Small program used for texting
+	   tests		   ;folder containing tests

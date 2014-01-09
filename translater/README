@@ -1,0 +1,29 @@
+Authors: Kevin Bolick
+	 Bruce Bolick
+
+This is a translator that takes a parsed input tree and translates
+it into a high-level intermediate representation (HIR).
+
+Software dependencies:
+	 racket
+	 raco
+
+Working:
+	Everything except for multi-variable assignment, in some cases.
+
+Broken:
+	Multi-variable assignment, in some cases.
+
+Manifest:
+	pytrans.rkt		(the translator)
+	lexer.rkt		(lexes python code into tokens)
+	pyparse.rkt		(parses tokens into a parse tree)
+	derivative-parsers.rkt	(derp for parsing)
+	python-ast.grm.sx	(grammar file for parsing)
+	tests			(directory full of tests.
+				 Note: tests will only work while
+				 connected to caprica server)
+	Makefile  		(the make file)
+	
+	other files for testing (i.e. hir-header.rkt, sdiff.rkt)
+

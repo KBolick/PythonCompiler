@@ -1,0 +1,2 @@
+(program (raise Foo) (raise Foo bar) (raise))
+

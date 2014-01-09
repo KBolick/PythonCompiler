@@ -1,0 +1,13 @@
+(program
+ (def
+  (abs x)
+  (suite
+   (cond
+    ((comparison x ("<" 0)) (suite (return ("-" x))))
+    (else (suite (return x))))))
+ (expr
+  (indexed
+   print
+   (called
+    (indexed abs (called (term ("-" 1) ("*" ("-" 1)) ("*" ("-" 1)))))))))
+

@@ -1,0 +1,7 @@
+(program
+ (try
+  (suite (expr (indexed print (called 3))))
+  (((except) (suite (expr (indexed print (called 10))))))
+  #f
+  #f))
+

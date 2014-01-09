@@ -1,0 +1,8 @@
+(program
+ (expr (indexed "bob" (subscript 1)))
+ (= (x) (dict (1 2) (3 4)))
+ (def (foo a b) (suite (pass)))
+ (def (bar a) (suite (return 3)))
+ (def (baz) (suite (return (set a b))))
+ (= (y) 4))
+

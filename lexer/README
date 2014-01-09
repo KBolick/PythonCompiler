@@ -1,0 +1,49 @@
+Authors:
+	Kevin Bolick
+	Bruce Bolick
+
+This is a lexer for Python code.
+It takes valid Python code as the input and outputs
+a tokenized version of the code.
+
+Dependencies:
+	racket
+	raco
+
+What we got working:
+        Just about everything!
+	- PUNCT (including () [] {} counting)
+	- IDS
+	- UNKNOWN chars: $ ` ?
+	- KEYWORDS
+	- OFFSTEPPING with INDENT and DEDENT tokens
+	- LINE JOINING (both implicit and explicit)
+	- COMMENTS
+	- NUMERIC LITERALS (all of them)
+	- STRING LITERALS (RAW and ESCAPABLE, long and short)
+	
+What we did not get working:
+	A quirky test: 
+	A DEDENT token is produced before the second 'a' char, although
+	it should be produced between the second and third 'a' chars.
+a
+ """
+"""
+ a
+a
+(ID "a")
+(NEWLINE)
+(INDENT)
+(LIT "\n")
+(NEWLINE)
+(DEDENT)
+(ID "a")
+(NEWLINE)
+(ID "a")
+(NEWLINE)
+
+Manifest:
+	README    : this file
+	lexer.rkt : the code
+	tests.rkt : the tests we made
+	Makefile  : the makefile

@@ -1,0 +1,4 @@
+(program
+ (= (x) (if (comparison 1 ("==" 2)) 3 4))
+ (= (y) (if False 3 (arith 8 ("-" (term 7 ("/" 2)))))))
+

@@ -1,0 +1,4 @@
+make[1]: Entering directory `/home/willebrand/School/compilers/parser'
+(program (def (abs x) (suite (pass))))
+
+make[1]: Leaving directory `/home/willebrand/School/compilers/parser'

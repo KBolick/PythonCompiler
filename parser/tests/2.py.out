@@ -1,0 +1,14 @@
+make[1]: Entering directory `/home/willebrand/School/compilers/Assignment2/stub/temp/pyparse'
+(program
+ (def
+  (fact n)
+  (suite
+   (cond
+    ((comparison n ("<" 0)) (suite (return False)))
+    ((comparison n ("==" 0)) (suite (return 1)))
+    (else
+     (suite
+      (return (term n ("*" (indexed fact (called (arith n ("-" 1))))))))))))
+ (expr (indexed print (called (indexed fact (called 5))))))
+
+make[1]: Leaving directory `/home/willebrand/School/compilers/Assignment2/stub/temp/pyparse'

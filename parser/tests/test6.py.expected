@@ -1,0 +1,3 @@
+(program
+ (cond ((comparison x ("not-in" z)) (expr (indexed print (called "Why?"))))))
+

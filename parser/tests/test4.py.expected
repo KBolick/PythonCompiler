@@ -1,0 +1,16 @@
+(program
+ (= (b) (shift (indexed a (subscript 2)) ("<<" 3)))
+ (def (c d e) (suite (return (tuple 3 2 1))))
+ (def (g) (suite (return 4 5)))
+ (def
+  (h a)
+  (suite
+   (try
+    (suite
+     (cond
+      (False (suite (return True)))
+      ((comparison 5 ("==" 3)) (suite (return (arith ("-" 2) ("+" 9)))))))
+    (((except IOError) (suite (expr (indexed print (called "WHY!?!bob"))))))
+    #f
+    (suite (global b))))))
+

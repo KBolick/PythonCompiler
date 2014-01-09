@@ -1,0 +1,7 @@
+(program
+ (try
+  (suite (raise "boo"))
+  (((except) (suite (expr (indexed print (called "excepted!"))))))
+  #f
+  #f))
+

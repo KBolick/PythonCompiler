@@ -1,0 +1,6 @@
+(program
+ (= (c) 2)
+ (= (a) (arith 3 ("+" c)))
+ (try (suite (expr c)) (((except) (suite (expr d)))) #f #f)
+ (def (f a b) (suite (pass))))
+

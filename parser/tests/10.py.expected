@@ -1,0 +1,12 @@
+(program
+ (def (f) (suite (expr (indexed print (called "called f"))) (return 1)))
+ (def (g) (suite (expr (indexed print (called "called g"))) (return 0)))
+ (= (a) (list (list 10 20) (list 30 40) (list 50 60)))
+ ("+="
+  ((indexed
+    a
+    (subscript (indexed f (called)))
+    (subscript (indexed g (called)))))
+  30)
+ (expr (indexed print (called (indexed a (subscript (indexed f (called))))))))
+

@@ -1,0 +1,8 @@
+(program
+ (= (a) (dict (1 2) (3 4)))
+ (= (b) (list 0 1 2))
+ (del (indexed a (subscript 1)))
+ (del (indexed b (subscript 2)))
+ (expr (indexed print (called a)))
+ (expr (indexed print (called b))))
+

@@ -1,0 +1,2 @@
+(program (while True (suite (pass)) (suite (expr 3))))
+

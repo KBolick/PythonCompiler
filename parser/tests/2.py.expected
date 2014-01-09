@@ -1,0 +1,12 @@
+(program
+ (def
+  (fact n)
+  (suite
+   (cond
+    ((comparison n ("<" 0)) (suite (return False)))
+    ((comparison n ("==" 0)) (suite (return 1)))
+    (else
+     (suite
+      (return (term n ("*" (indexed fact (called (arith n ("-" 1))))))))))))
+ (expr (indexed print (called (indexed fact (called 5))))))
+

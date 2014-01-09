@@ -1,0 +1,9 @@
+(program
+ (= (x) (if (comparison 1 ("==" 2)) 3 4))
+ (= (y) (if False 3 (arith 8 ("-" (term 7 ("/" 2))))))
+ (global a b)
+ (= (b) 3)
+ (def (foo) (suite (global a) (= (a) 3) (= (b) 2)))
+ (expr (indexed print (called a)))
+ (expr (indexed print (called b))))
+
