@@ -1,0 +1,16 @@
+This is part of a Python compiler that I wrote for school.
+
+It is unfinished at the moment, but at the moment, it does the following:
+
+   -Lexes valid python code into tokens
+   -Parses the tokens into a parse tree in s-expression format
+   -Translates the parse tree s-expression into a high-level intermediate representation (HIR)
+
+To finish this compiler, I would:
+
+   -Desugar the HIR code into a low-level intermediate representation (LIR)
+   -Translate the LIR into continuation-passing style code (CPS)
+   -Translate the CPS code into C code
+   -Compile from C
+
+class website: matt.might.net/teaching/compilers/spring-2013/
